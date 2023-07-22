@@ -23,23 +23,34 @@ function App() {
     const [nt4, setnt4] = useState(0);
     const [num, setnum] = useState(0);
     const [chat_synopsis3, setchat_synopsis3] = useState("");
-    const sendMessage = () => {
-        setIsLoading(true);
-
-        axios.post('http://localhost:5000/ntv', {
+    const refresh = () =>{
+        setStatus("REFRESHING")
+        axios.post('http://localhost:5000/refresh', {
         })
         .then((response) => {
-            setnt1(response.data.nt1*2);
-            setnt2(response.data.nt2*2);
-            setnt3(response.data.nt3*2);
-            setnt4(response.data.nt4*2);
-            console.log(nt1);
+            setAdrenaline_level_user(0);
+            setDopamine_level_user(0);
+            setEndorphin_level_user(0);
+            setOxytocin_level_user(0);
+            setchat_synopsis3('');
+            setPlan('');
+            seterc1('');
+            seterc2('');
+            seterc3('');
+            setnt1(0);
+            setnt2(0);
+            setnt3(0);
+            setnt4(0);
+            setStatus("HEALTHY");
         //     setServerResponses({response_ERC1: "", response_ERC2: "", response_ERC3: "", plan: "", dopamine_level_user: dopamine_level_user, oxytocin_level_user: oxytocin_level_user, endorphin_level_user: endorphin_level_user, adrenaline_level_user: adrenaline_level_user, ntv_1: 0, ntv_2: 0, ntv_3: 0, ntv_4: 0, status: "HEALTHY", num: 0,})
         })
         .catch((error) => {
             console.log(error);
             setIsLoading(false);
         });
+    }
+    const sendMessage = () => {
+        setIsLoading(true);
 
         axios.post('http://localhost:5000/writememory', {
             msg: message
@@ -65,6 +76,22 @@ function App() {
             console.log(error);
             setIsLoading(false);
             
+        });
+
+        axios.post('http://localhost:5000/ntv', {
+        })
+        .then((response) => {
+            setnt1(response.data.nt1*2);
+            setnt2(response.data.nt2*2);
+            setnt3(response.data.nt3*2);
+            setnt4(response.data.nt4*2);
+            console.log(nt1);
+
+        //     setServerResponses({response_ERC1: "", response_ERC2: "", response_ERC3: "", plan: "", dopamine_level_user: dopamine_level_user, oxytocin_level_user: oxytocin_level_user, endorphin_level_user: endorphin_level_user, adrenaline_level_user: adrenaline_level_user, ntv_1: 0, ntv_2: 0, ntv_3: 0, ntv_4: 0, status: "HEALTHY", num: 0,})
+        })
+        .catch((error) => {
+            console.log(error);
+            setIsLoading(false);
         });
 
         axios.post('http://localhost:5000/num_mem_objects', {
@@ -178,7 +205,7 @@ function App() {
                     
                 </div>
                 <div style={{display : 'flex', flexDirection : 'column'}}>
-                    <div className={styles.App} style={{width : '20vw', height : '500px', border: '1px solid #00AAAA'}}>
+                    <div className={styles.App} style={{width : '20vw', height : '530px', border: '1px solid #00AAAA'}}>
                         <div style={{marginTop : '16px' , marginBottom : '10px'}}> USER NTVs</div>
                         <Bar name="Dopamine" load={dopamine_level_user}/>
                         <Bar name="Endorphin" load={endorphin_level_user}/>
@@ -195,6 +222,7 @@ function App() {
                         <BoxContainer n={num} />
                         <div className="line" style={{minWidth : '20vw' , minHeight : '0.2px' , backgroundColor : 'white' , marginTop : '10px'}}></div>
                         <p style={{marginTop : '16px', color : 'cyan' , opacity : '70%'}}> STATUS  :  {status}</p>
+                        <button className={styles.button} onClick={refresh} disabled={isLoading}>{isLoading ? '....' : 'Refresh'}</button>
                     </div>
                 </div>
         </div>
@@ -204,6 +232,8 @@ function App() {
                         <p style={{margin : '2px', opacity : '60%', marginLeft : '22px'}}><b>/end</b>  :  <i>to finish synthesizing</i></p>
                         <p style={{margin : '2px', opacity : '60%', marginLeft : '22px'}}><b>/set _neurotransmitter_  _value_</b>  :  <i>eg. /set oxytocin high set adrenaline low</i></p>
                         <p style={{margin : '2px', opacity : '60%', marginLeft : '22px'}}><b>/reset future</b>  :  <i>chances are that the future plans may get fucked up due to excessive chatting</i></p>
+                        <p style={{margin : '2px', opacity : '60%', marginLeft : '22px'}}><i> It is advised you press the refresh button whenever you want to start a new chat</i></p>
+                        <p style={{margin : '2px', opacity : '60%', marginLeft : '22px'}}><i> If some replies dont show up, the the server is most likely overloaded. Please refresh with the button always!</i></p>
                         <p style={{margin : '25px', marginTop : '40px' , opacity : '60%',textAlign : 'center' , fontSize : '12px'}}>An official product of NeuraKink Inc.</p>
                     </div>
                         
